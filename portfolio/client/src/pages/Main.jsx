@@ -1,8 +1,4 @@
 import React from 'react';
-
-import avatar_image from '../static/avatar_img.jpg'
-import {Image, ListGroup} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
 import MainHello from "../components/MainHello";
 import MainAvatar from "../components/MainAvatar";

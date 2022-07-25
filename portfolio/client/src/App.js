@@ -26,22 +26,10 @@ import {ADMIN_ROUTE} from "./utils/consts";
 
 console.log(process.env.REACT_APP_API_URL)
 
+
+
 const App = observer(() => {
     const {user} = useContext(Context)
-    const [loading, setLoading] = useState(true)
-
-    useEffect(()=> {
-        setTimeout(()=> {
-            check().then(data=>{
-                user.setUser(true)
-                user.setIsAuth(true)
-            }).finally(()=> setLoading(false))
-        }, 1000)
-    }, [])
-
-    if (loading){
-        return <Spinner animation={"grow"}/>
-    }
     return (
         <BrowserRouter>
             {user.isAuth ?

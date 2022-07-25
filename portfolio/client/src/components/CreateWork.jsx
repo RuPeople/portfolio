@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Col, Dropdown, Form, Modal, Row} from "react-bootstrap";
 import {Context} from "../index";
-import work from "../pages/Work";
 import {createWork, fetchCategories} from "../http/portfolioAPI";
 import {observer} from "mobx-react-lite";
 
@@ -16,26 +15,11 @@ const CreateWork = observer(({show, onHide}) => {
     const [stack, setStack] = useState('')
     const [year, setYear] = useState(0)
 
-    const [image, setImage] = useState([])
+    const [category, setCategory] = useState([])
 
     useEffect(() => {
         fetchCategories().then(data=>work.setCategories(data))
     }, [])
-
-    const selectFile = e => {
-        setThumbnail(e.target.files[0])
-    }
-
-    const addImage = () => {
-        setImage([...image, {img: '', number: Date.now()}])
-    }
-    const removeImage = (number) => {
-        setImage(image.filter(i => i.number !== number))
-    }
-
-    const changeImage = (key, image, number) => {
-        setImage(image.map(i => i.number === number ? {...i, [key]:value}:i))
-    }
 
     const addWork = () => {
         const formData = new FormData()
@@ -44,11 +28,11 @@ const CreateWork = observer(({show, onHide}) => {
         formData.append('thumbnail', thumbnail)
         formData.append('bigDescription',bigDescription)
         formData.append('website',website)
-        formData.append('stack',stack)
-        formData.append('year',year)
-        formData.append('image',JSON.stringify(image))
-        createWork(formData).then(data => onHide())
+        formData.append('stack', stack)
+        formData.append('year', year)
+        formData.append('categoryId', category.id)
 
+        createWork(formData).then(data => onHide())
     }
 
 
@@ -63,14 +47,15 @@ const CreateWork = observer(({show, onHide}) => {
                 <Form>
                     <Dropdown>
                         <Dropdown.Toggle>
-                            {/*{work.selectedCategory.name || "Pick category"}*/}
-
+                            {category.name || "Pick category"}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {
-                                work.categories.map(category =>
-                                <Dropdown.Item key={category.id} onClick={()=> work.setSelectedCategory(category)} >
-                                    {category.name}
+                                work.categories.map(cat =>
+                                <Dropdown.Item key={cat.id} onClick={()=> {
+                                    setCategory(cat)
+                                }} >
+                                    {cat.name}
                                 </Dropdown.Item>
                                 )
                             }
@@ -93,7 +78,10 @@ const CreateWork = observer(({show, onHide}) => {
                         placeholder="Thumbnail"
                         type="file"
                         className="my-2"
-                        onChange={selectFile}
+                        onChange={e => {
+                            setThumbnail(e.target.files[0])
+                            console.log(thumbnail)
+                        }}
                     />
                     <Form.Control
                         value={bigDescription}
@@ -120,26 +108,6 @@ const CreateWork = observer(({show, onHide}) => {
                         type="number"
                         className="my-2"
                     />
-
-                    <Button onClick={addImage}>
-                        Add new Image
-                    </Button>
-                    {image.map(i =>
-                        <Row key={i.number} className="my-2">
-                            <Col className="col-9">
-                                <Form.Control
-                                    value={i.image}
-                                    onChange={(e) => changeImage('img',e.target.value, i.number)}
-                                    placeholder="image"
-                                    type="file"
-                                />
-                            </Col>
-                            <Col>
-                                <Button onClick={() => removeImage(i.number)}>Delete</Button>
-                            </Col>
-                        </Row>
-                    )}
-
                 </Form>
             </Modal.Body>
             <Modal.Footer>

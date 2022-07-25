@@ -1,7 +1,7 @@
+import React, {createContext} from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import './index.css';
-import {createContext} from "react";
+import App from "./App";
 import PortfolioStore from "./portfolio/PortfolioStore";
 import UserStore from "./portfolio/UserStore";
 
@@ -13,7 +13,6 @@ root.render(
     <Context.Provider value={{
         work: new PortfolioStore(),
         user: new UserStore(),
-
     }}>
         <App/>
     </Context.Provider>

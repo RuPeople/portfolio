@@ -10,6 +10,7 @@ const CreateCategory = observer(({show, onHide}) => {
 
     useEffect(() => {
         fetchCategories().then(data=>work.setCategories(data))
+        console.log(work.categories)
     }, [])
 
     const addCategory = () => {

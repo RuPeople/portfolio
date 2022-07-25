@@ -4,16 +4,20 @@ import BreadcrumbSeparator from "../static/BreadcrumbSeparator";
 import {AnimatePresence, motion} from "framer-motion";
 import {NavLink} from "react-router-dom";
 import {PORTFOLIO_ROUTE} from "../utils/consts";
-import {fetchOneWork} from "../http/portfolioAPI";
+import {fetchImages, fetchOneWork} from "../http/portfolioAPI";
 
 import {useParams} from "react-router-dom";
 
 const Work = () => {
-    const [work, setWork] = useState({image:[]})
+    const [work, setWork] = useState({})
+    const [images, setImages] = useState([])
     const {id} = useParams()
 
     useEffect(() => {
         fetchOneWork(id).then(data => setWork(data))
+        fetchImages(id).then(data => {
+            setImages(data.rows)
+        })
     },[])
 
     return (
@@ -39,9 +43,9 @@ const Work = () => {
                     <List className="work__list p-0">
                         {work.website ?
                             <ListItem
-                                className="work__list_item d-flex flex-row justify-content-start align-items-center mb-2">
+                                className="work__list_item d-flex flex-column flex-sm-row justify-content-start align-items-start align-items-sm-center mb-2">
                                 <Badge
-                                    className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2"
+                                    className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2 ms-0"
                                     ml='1'>
                                     <svg className="me-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor"
@@ -51,7 +55,7 @@ const Work = () => {
                                     </svg>
                                     Website
                                 </Badge>
-                                <a className="work__list_item-link d-flex flex-row"
+                                <a className="work__list_item-link d-flex flex-row my-auto mt-1 mt-sm-0 mb-0"
                                    href={work.website}>{work.website}</a>
                             </ListItem>
                             :
@@ -59,9 +63,9 @@ const Work = () => {
                         }
                         {work.stack ?
                             <ListItem
-                                className="work__list_item d-flex flex-row justify-content-start align-items-center mb-2">
+                                className="work__list_item d-flex flex-column flex-sm-row justify-content-start align-items-start align-items-sm-center mb-2">
                                 <Badge
-                                    className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2"
+                                    className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2 ms-0"
                                     ml='1'>
                                     <svg className="bi bi-globe me-2" xmlns="http://www.w3.org/2000/svg" width="16"
                                          height="16" fill="currentColor"
@@ -73,15 +77,15 @@ const Work = () => {
                                     </svg>
                                     Stack
                                 </Badge>
-                                <span className="work__list_item-text d-flex flex-row">{work.stack}</span>
+                                <span className="work__list_item-text d-flex flex-row my-auto mt-1 mt-sm-0 mb-0">{work.stack}</span>
                             </ListItem>
                             :
                             <></>
                         }{work.year ?
                         <ListItem
-                            className="work__list_item d-flex flex-row justify-content-start align-items-center mb-2">
+                            className="work__list_item d-flex flex-column flex-sm-row justify-content-start align-items-start align-items-sm-center mb-2">
                             <Badge
-                                className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2"
+                                className="work__list_item-badge d-flex flex-row justify-content-center align-items-center py-1 px-2 me-2 ms-0"
                                 ml='1'>
                                 <svg className="bi bi-globe me-2" xmlns="http://www.w3.org/2000/svg" width="16"
                                      height="16" fill="currentColor"
@@ -91,30 +95,21 @@ const Work = () => {
                                 </svg>
                                 year
                             </Badge>
-                            <span className="work__list_item-text d-flex flex-row">{work.year}</span>
+                            <span className="work__list_item-text d-flex flex-row my-auto mt-1 mt-sm-0 mb-0">{work.year}</span>
                         </ListItem>
                         :
                         <></>
                     }
                     </List>
                     <div className="work__gallery">
-                        {/*{
-                            work.image.map((img, index) =>
-                                <motion.img
-                                    key={index}
-                                    initial={{opacity: 0, x: 100}}
-                                    whileInView={{opacity: 1, x: 0}}
-                                    viewport={{once: true}}
-                                    className="w-100 mb-3" style={{borderRadius: 10}}
-                                    src={process.env.REACT_APP_API_URL + img.thumbnail}/>
-                            )
-                        }*/}
-                        <motion.img
-                            initial={{opacity: 0, x: 100}}
-                            whileInView={{opacity: 1, x: 0}}
-                            viewport={{once: true}}
-                            className="w-100 mb-3" style={{borderRadius: 10}}
-                            src={process.env.REACT_APP_API_URL + work.thumbnail}/>
+                        {images.map(image =>
+                            <motion.img
+                                initial={{opacity: 0, x: 100}}
+                                whileInView={{opacity: 1, x: 0}}
+                                viewport={{once: true}}
+                                className="w-100 mb-3" style={{borderRadius: 10}}
+                                src={process.env.REACT_APP_API_URL + image.img} />
+                        )}
                     </div>
                 </section>
             </motion.section>

@@ -1,16 +1,17 @@
 const uuid = require('uuid')
 const path = require('path')
-const {Work} = require("../models/models");
+const {Image, Work} = require("../models/models");
 const ApiError = require('../error/ApiError')
 
 class  ImageController {
     async create (req, res, next) {
         try{
+            const {workId} = req.body
             const {img} = req.files
-            let fileName = uuid.v4() + ".png"
+            let fileName = uuid.v4() + ".jpeg"
             await img.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-            const image = await Work.create({img:fileName})
+            const image = await Image.create({workId, img:fileName})
             return res.json(image)
         }
         catch (e) {
@@ -18,27 +19,18 @@ class  ImageController {
         }
     }
     async getAll (req, res) {
-        let {limit, page} = req.query
-        page = page || 1
-        limit = limit || 10
-        let offset = page * limit-limit
-        let works;
+        let images;
+        let {workId} = req.query
 
-        works = await Work.findAndCountAll({limit, offset})
+        if (!workId) {
+            images = await Image.findAndCountAll()
+        }
+        if (workId) {
+            images = await Image.findAndCountAll({where:{workId}})
+        }
 
-        return res.json(works)
-    }
-    async getOne (req, res, next) {
-        const {id} = req.params
-        const work = await Work.findOne(
-            {
-                where: {id},
-            }
-        )
-        return res.json(work)
-    }
-    async delete (req, res) {
 
+        return res.json(images)
     }
 }
 module.exports = new ImageController()
