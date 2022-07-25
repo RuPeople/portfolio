@@ -1,0 +1,6 @@
+export const MAIN_ROUTE = '/portfolio-main'
+export const PORTFOLIO_ROUTE = '/portfolio'
+export const WORK_ROUTE = '/work'
+export const AUTH_ROUTE = '/auth'
+export const ADMIN_ROUTE = '/admin'
+export const LOGIN_ROUTE = '/login'
